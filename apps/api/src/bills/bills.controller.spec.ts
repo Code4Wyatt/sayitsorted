@@ -2,6 +2,7 @@ import { INestApplication } from "@nestjs/common";
 import { Test } from "@nestjs/testing";
 import type { BillExtraction, BillExtractor } from "@repo/core";
 import {
+  APIConnectionTimeoutError,
   APIError,
   BillExtractionError,
   RateLimitError,
@@ -84,6 +85,11 @@ describe("POST /bills/parse", () => {
       new RateLimitError(429, undefined, "Rate limited", new Headers()),
     );
     await post({ text: "rent", today: "2026-10-14" }).expect(503);
+  });
+
+  it("returns 504 when Claude takes too long", async () => {
+    extract.mockRejectedValue(new APIConnectionTimeoutError());
+    await post({ text: "rent", today: "2026-10-14" }).expect(504);
   });
 
   it("returns 502 for other Claude API errors", async () => {
