@@ -4,7 +4,10 @@ export const CONFIG = Symbol("CONFIG");
 
 const envSchema = z
   .object({
-    ANTHROPIC_API_KEY: z.string().min(1, "is required"),
+    ANTHROPIC_API_KEY: z
+      .string({ error: "is required" })
+      .trim()
+      .startsWith("sk-ant-", "should start with sk-ant-"),
     WEB_ORIGIN: z.url().default("http://localhost:3000"),
     PORT: z.coerce.number().int().positive().default(3002),
   })

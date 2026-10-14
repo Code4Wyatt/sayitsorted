@@ -1,9 +1,14 @@
-import { Global, Module } from "@nestjs/common";
-import { CONFIG, loadConfig } from "./config.js";
+import { Module, type DynamicModule } from "@nestjs/common";
+import { CONFIG, type Config } from "./config.js";
 
-@Global()
-@Module({
-  providers: [{ provide: CONFIG, useFactory: () => loadConfig() }],
-  exports: [CONFIG],
-})
-export class ConfigModule {}
+@Module({})
+export class ConfigModule {
+  static forRoot(config: Config): DynamicModule {
+    return {
+      global: true,
+      module: ConfigModule,
+      providers: [{ provide: CONFIG, useValue: config }],
+      exports: [CONFIG],
+    };
+  }
+}

@@ -22,6 +22,15 @@ describe("loadConfig", () => {
     );
   });
 
+  it("rejects a placeholder key and trims stray whitespace", () => {
+    expect(() => loadConfig({ ANTHROPIC_API_KEY: "your-key-here" })).toThrow(
+      /should start with sk-ant-/,
+    );
+    expect(
+      loadConfig({ ANTHROPIC_API_KEY: " sk-ant-test " }).anthropicApiKey,
+    ).toBe("sk-ant-test");
+  });
+
   it("rejects a web origin that isn't a URL", () => {
     expect(() =>
       loadConfig({ ANTHROPIC_API_KEY: "sk-ant-test", WEB_ORIGIN: "nope" }),
