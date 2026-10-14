@@ -45,6 +45,16 @@ describe("createClaudeExtractor", () => {
     expect(content).toContain("<entry>\nrent\n</entry>");
   });
 
+  it("caps how long a request can take", async () => {
+    const { client, create } = fakeClient(reply(JSON.stringify(extraction)));
+    await createClaudeExtractor({ client })({ text: "rent", today });
+
+    expect(create.mock.calls[0]![1]).toEqual({
+      timeout: 20_000,
+      maxRetries: 1,
+    });
+  });
+
   it("throws when the model declines", async () => {
     const { client } = fakeClient({ stop_reason: "refusal", content: [] });
 

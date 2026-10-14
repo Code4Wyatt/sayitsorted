@@ -3,6 +3,7 @@ import {
   BadRequestException,
   Body,
   Controller,
+  GatewayTimeoutException,
   HttpCode,
   Inject,
   Logger,
@@ -17,6 +18,7 @@ import {
   type ParseResult,
 } from "@repo/core";
 import {
+  APIConnectionTimeoutError,
   APIError,
   BillExtractionError,
   RateLimitError,
@@ -51,6 +53,10 @@ export class BillsController {
       }
       if (error instanceof RateLimitError) {
         throw new ServiceUnavailableException("Too busy, try again shortly");
+      }
+      if (error instanceof APIConnectionTimeoutError) {
+        this.logger.error("Claude API request timed out");
+        throw new GatewayTimeoutException("Bill parsing took too long");
       }
       if (error instanceof APIError) {
         this.logger.error(`Claude API error ${error.status}: ${error.message}`);

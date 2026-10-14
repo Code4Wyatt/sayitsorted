@@ -12,6 +12,9 @@ import {
 
 export const DEFAULT_BILL_EXTRACTION_MODEL = "claude-opus-5-5";
 
+const REQUEST_TIMEOUT_MS = 20_000;
+const MAX_RETRIES = 1;
+
 const { type, schema } = betaZodOutputFormat(billExtractionSchema);
 
 export class BillExtractionError extends Error {
@@ -19,24 +22,32 @@ export class BillExtractionError extends Error {
 }
 
 export function createClaudeExtractor({
-  client = new Anthropic(),
+  apiKey,
+  client = new Anthropic({ apiKey }),
   model = DEFAULT_BILL_EXTRACTION_MODEL,
-}: { client?: Anthropic; model?: string } = {}): BillExtractor {
+}: {
+  apiKey?: string;
+  client?: Anthropic;
+  model?: string;
+} = {}): BillExtractor {
   return async ({ text, today }) => {
-    const response = await client.beta.messages.create({
-      model,
-      max_tokens: 16000,
-      betas: ["server-side-fallback-2026-07-01"],
-      fallbacks: "default",
-      output_config: { effort: "low", format: { type, schema } },
-      system: BILL_EXTRACTION_SYSTEM_PROMPT,
-      messages: [
-        {
-          role: "user",
-          content: billExtractionUserMessage(text, today, weekdayOf(today)),
-        },
-      ],
-    });
+    const response = await client.beta.messages.create(
+      {
+        model,
+        max_tokens: 16000,
+        betas: ["server-side-fallback-2026-07-01"],
+        fallbacks: "default",
+        output_config: { effort: "low", format: { type, schema } },
+        system: BILL_EXTRACTION_SYSTEM_PROMPT,
+        messages: [
+          {
+            role: "user",
+            content: billExtractionUserMessage(text, today, weekdayOf(today)),
+          },
+        ],
+      },
+      { timeout: REQUEST_TIMEOUT_MS, maxRetries: MAX_RETRIES },
+    );
 
     if (response.stop_reason === "refusal") {
       throw new BillExtractionError("The model declined to parse this entry");
