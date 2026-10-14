@@ -32,6 +32,13 @@ export const parseResultSchema = z.discriminatedUnion("status", [
 
 export type ParseResult = z.infer<typeof parseResultSchema>;
 
+export const parseBillRequestSchema = z.object({
+  text: z.string().max(500),
+  today: z.iso.date(),
+});
+
+export type ParseBillRequest = z.infer<typeof parseBillRequestSchema>;
+
 export async function parseBill(
   text: string,
   { extract, today }: { extract: BillExtractor; today: string },
