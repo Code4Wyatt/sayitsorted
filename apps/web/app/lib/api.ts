@@ -28,6 +28,11 @@ export async function requestParse(text: string): Promise<ParseResult> {
     );
   }
 
+  if (response.status === 429) {
+    throw new ParseRequestError(
+      "You've added a lot in a short time. Wait a minute and try again.",
+    );
+  }
   if (response.status === 504) {
     throw new ParseRequestError(TOO_SLOW);
   }

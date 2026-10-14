@@ -11,6 +11,7 @@ import {
   ServiceUnavailableException,
   UnprocessableEntityException,
 } from "@nestjs/common";
+import { days, minutes, Throttle } from "@nestjs/throttler";
 import {
   parseBill,
   parseBillRequestSchema,
@@ -35,6 +36,10 @@ export class BillsController {
 
   @Post("parse")
   @HttpCode(200)
+  @Throttle({
+    minute: { limit: 10, ttl: minutes(1) },
+    day: { limit: 100, ttl: days(1) },
+  })
   async parse(@Body() body: unknown): Promise<ParseResult> {
     const request = parseBillRequestSchema.safeParse(body);
     if (!request.success) {

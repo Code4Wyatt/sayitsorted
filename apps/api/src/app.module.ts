@@ -4,9 +4,10 @@ import { AppService } from "./app.service.js";
 import { BillsModule } from "./bills/bills.module.js";
 import type { Config } from "./config/config.js";
 import { ConfigModule } from "./config/config.module.js";
+import { RateLimitModule } from "./rate-limit/rate-limit.module.js";
 
 @Module({
-  imports: [BillsModule],
+  imports: [RateLimitModule, BillsModule],
   controllers: [AppController],
   providers: [AppService],
 })
