@@ -1,14 +1,19 @@
 import { NestFactory } from "@nestjs/core";
 import { existsSync } from "node:fs";
 import { AppModule } from "./app.module.js";
-import { CONFIG, type Config } from "./config/config.js";
+import { ConfigError, loadConfig, type Config } from "./config/config.js";
 
 if (existsSync(".env")) process.loadEnvFile();
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-  const config = app.get<Config>(CONFIG);
-  app.enableCors({ origin: config.webOrigin });
-  await app.listen(config.port);
+let config: Config;
+try {
+  config = loadConfig();
+} catch (error) {
+  if (!(error instanceof ConfigError)) throw error;
+  console.error(error.message);
+  process.exit(1);
 }
-await bootstrap();
+
+const app = await NestFactory.create(AppModule.forRoot(config));
+app.enableCors({ origin: config.webOrigin });
+await app.listen(config.port);
