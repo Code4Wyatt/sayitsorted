@@ -1,8 +1,8 @@
 "use client";
 
 import { billFrequencySchema } from "@repo/core";
-import { frequencyLabels } from "../lib/format";
-import { toBill, type BillForm } from "./bill-form";
+import { frequencyLabels } from "../../lib/format";
+import { toBill, type BillForm } from "../_lib/bill-form";
 import styles from "./capture.module.css";
 
 type Props = {

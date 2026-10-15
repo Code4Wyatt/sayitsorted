@@ -1,8 +1,8 @@
 "use client";
 
-import { formatAmount, formatDueDate, frequencyLabels } from "../lib/format";
+import { formatAmount, formatDueDate, frequencyLabels } from "../../lib/format";
 import styles from "./capture.module.css";
-import { useSavedBills } from "./saved-bills-store";
+import { useSavedBills } from "../_lib/saved-bills-store";
 
 export function SavedBills() {
   const { bills, remove } = useSavedBills();
