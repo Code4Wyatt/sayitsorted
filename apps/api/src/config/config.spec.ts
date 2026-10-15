@@ -3,7 +3,7 @@ import { ConfigError, loadConfig } from "./config.js";
 describe("loadConfig", () => {
   it("reads the environment and applies defaults", () => {
     expect(loadConfig({ ANTHROPIC_API_KEY: "sk-ant-test" })).toEqual({
-      anthropicApiKey: "sk-ant-test",
+      billParser: { kind: "claude", anthropicApiKey: "sk-ant-test" },
       webOrigin: "http://localhost:3000",
       port: 3002,
     });
@@ -27,8 +27,18 @@ describe("loadConfig", () => {
       /should start with sk-ant-/,
     );
     expect(
-      loadConfig({ ANTHROPIC_API_KEY: " sk-ant-test " }).anthropicApiKey,
-    ).toBe("sk-ant-test");
+      loadConfig({ ANTHROPIC_API_KEY: " sk-ant-test " }).billParser,
+    ).toEqual({ kind: "claude", anthropicApiKey: "sk-ant-test" });
+  });
+
+  it("doesn't need an API key with the fake parser", () => {
+    expect(
+      loadConfig({ BILL_PARSER: "fake", ANTHROPIC_API_KEY: "" }).billParser,
+    ).toEqual({ kind: "fake" });
+  });
+
+  it("rejects an unknown parser", () => {
+    expect(() => loadConfig({ BILL_PARSER: "gpt" })).toThrow(/BILL_PARSER/);
   });
 
   it("rejects a web origin that isn't a URL", () => {
