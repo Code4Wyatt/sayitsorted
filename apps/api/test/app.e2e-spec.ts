@@ -1,17 +1,17 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
-import request from 'supertest';
-import { App } from 'supertest/types.js';
-import { AppModule } from './../src/app.module.js';
-import type { Config } from './../src/config/config.js';
+import { Test, TestingModule } from "@nestjs/testing";
+import { INestApplication } from "@nestjs/common";
+import request from "supertest";
+import { App } from "supertest/types.js";
+import { AppModule } from "./../src/app.module.js";
+import type { Config } from "./../src/config/config.js";
 
 const testConfig: Config = {
-  anthropicApiKey: 'sk-ant-test',
-  webOrigin: 'http://localhost:3000',
+  billParser: { kind: "fake" },
+  webOrigin: "http://localhost:3000",
   port: 3002,
 };
 
-describe('App (e2e)', () => {
+describe("App (e2e)", () => {
   let app: INestApplication<App>;
 
   beforeEach(async () => {
@@ -23,11 +23,11 @@ describe('App (e2e)', () => {
     await app.init();
   });
 
-  it('/health (GET)', () => {
+  it("/health (GET)", () => {
     return request(app.getHttpServer())
-      .get('/health')
+      .get("/health")
       .expect(200)
-      .expect({ status: 'ok' });
+      .expect({ status: "ok" });
   });
 
   afterEach(async () => {

@@ -21,7 +21,7 @@ describe("rate limiting", () => {
     const moduleRef = await Test.createTestingModule({
       imports: [
         AppModule.forRoot({
-          anthropicApiKey: "sk-ant-test",
+          billParser: { kind: "fake" },
           webOrigin: "http://localhost:3000",
           port: 3002,
         }),
