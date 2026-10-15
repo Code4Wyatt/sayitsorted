@@ -2,13 +2,13 @@
 
 import type { BillDraft } from "@repo/core";
 import { useRef, useState } from "react";
-import { ParseRequestError, requestParse } from "../lib/api";
+import { ParseRequestError, requestParse } from "../../lib/api";
 import { BillCard } from "./bill-card";
-import { applyParse, emptyBillForm, toBill, type BillForm } from "./bill-form";
+import { applyParse, emptyBillForm, toBill, type BillForm } from "../_lib/bill-form";
 import styles from "./capture.module.css";
 import { SavedBills } from "./saved-bills";
-import { useSavedBills } from "./saved-bills-store";
-import { useSpeechCapture } from "./use-speech-capture";
+import { useSavedBills } from "../_lib/saved-bills-store";
+import { useSpeechCapture } from "../_lib/use-speech-capture";
 
 const EXAMPLE = "“Council tax, £140, on the 1st, every month”";
 

@@ -20,6 +20,18 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load Inter, a custom Google Font.
 
+## Project structure
+
+Code lives next to the route that uses it, so its location tells you where it's used.
+
+| Used by | Lives in |
+| --- | --- |
+| More than one app | `packages/ui` (`@repo/ui`) |
+| More than one route | `components/`, and `lib/` for non-component code |
+| One route | `app/<route>/_components/`, and `app/<route>/_lib/` for non-component code |
+
+The `_` prefix keeps these folders out of routing. Start a file next to its route and move it up a level only when a second route needs it.
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
