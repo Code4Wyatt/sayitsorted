@@ -52,7 +52,7 @@ describe("rate limiting", () => {
 
   it("doesn't limit other routes as tightly", async () => {
     for (let i = 0; i < 11; i++) {
-      await request(app.getHttpServer()).get("/").expect(200);
+      await request(app.getHttpServer()).get("/health").expect(200);
     }
   });
 });

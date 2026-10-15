@@ -6,6 +6,7 @@ import { ConfigError, loadConfig, type Config } from "./config/config.js";
 if (existsSync(".env")) process.loadEnvFile();
 
 let config: Config;
+
 try {
   config = loadConfig();
 } catch (error) {
@@ -15,5 +16,7 @@ try {
 }
 
 const app = await NestFactory.create(AppModule.forRoot(config));
+
 app.enableCors({ origin: config.webOrigin });
+
 await app.listen(config.port);
